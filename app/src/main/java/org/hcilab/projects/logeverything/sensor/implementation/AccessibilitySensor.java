@@ -1,0 +1,116 @@
+package org.hcilab.projects.logeverything.sensor.implementation;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import org.hcilab.projects.logeverything.activity.CONST;
+import org.hcilab.projects.logeverything.sensor.AbstractSensor;
+import org.hcilab.projects.logeverything.service.AccessibilityLogService;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.util.Log;
+import android.view.View;
+
+public class AccessibilitySensor extends AbstractSensor {
+
+	private static final long serialVersionUID = 1L;
+	
+	private Context m_Context = null;
+	private Intent m_Intent;
+	private long count;
+
+	private DataUpdateReceiver m_Receiver;
+	
+	
+	public AccessibilitySensor() {
+		m_IsRunning = false;
+		TAG = getClass().getName();
+		SENSOR_NAME = "Accessibility";
+		FILE_NAME = "accessibility.csv";
+	}
+	
+	@Override
+	public View getSettingsView(Context context) {
+		return null;
+	}
+
+	@Override
+	public boolean isAvailable(Context context) {
+		return true;
+	}
+
+	@Override
+	public void start(Context context) {
+		super.start(context);
+		if (!m_isSensorAvailable)
+			return;
+		
+		m_Context = context;
+
+		try {
+			m_FileWriter = new FileWriter(new File(getFilePath()), true);
+			m_FileWriter.write("time,type,class,package,text");
+			m_FileWriter.write("\n");
+			m_FileWriter.flush();
+		} catch (IOException e) {
+			Log.e(TAG, e.toString());
+		}
+		
+		
+		m_Intent = new Intent(m_Context, AccessibilityLogService.class);
+		context.startService(m_Intent);
+		
+		if (m_Receiver == null)
+			m_Receiver = new DataUpdateReceiver();
+        
+		IntentFilter intentFilter = new IntentFilter(AccessibilityLogService.TAG);
+		intentFilter.addAction(AccessibilityLogService.TAG);
+		m_Context.registerReceiver(m_Receiver, intentFilter);
+				
+		m_IsRunning = true;
+	}
+
+	@Override
+	public void stop() {
+		m_IsRunning = false;
+		if (m_Context == null)
+			return;
+		m_Context.unregisterReceiver(m_Receiver);
+		m_Context.stopService(m_Intent);
+	}
+	
+	private class DataUpdateReceiver extends BroadcastReceiver {
+ 		
+        public DataUpdateReceiver() {
+        	super();
+        }
+ 
+        @Override
+        public void onReceive(Context context, Intent intent) {
+	        if (intent.getAction().equals(AccessibilityLogService.TAG)) {
+	        	if(m_IsRunning) {
+	        		try {
+		        		if (m_FileWriter == null)
+							m_FileWriter = new FileWriter(new File(getFilePath()), true);
+							
+		        		//Log.i(TAG, intent.getStringExtra(android.content.Intent.EXTRA_TEXT));
+		        		
+		    			count++;
+		    			m_FileWriter.write(intent.getStringExtra(android.content.Intent.EXTRA_TEXT));
+						int flushLevel = 50;
+						if(count % flushLevel == 0) {
+		    				m_FileWriter.flush();
+		    				count = 1;
+		    			}
+	        		} catch (IOException e) {
+	        			Log.e(TAG, e.toString());
+					}
+	        	}
+        	}
+        }
+    }
+}

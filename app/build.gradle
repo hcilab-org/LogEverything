@@ -1,0 +1,26 @@
+apply plugin: 'com.android.application'
+
+android {
+
+    compileSdkVersion android_compile_version
+    buildToolsVersion android_version
+
+    defaultConfig {
+        applicationId "org.hcilab.projects.logeverything"
+        minSdkVersion android_minSdkVersion
+        targetSdkVersion android_targetSdkVersion
+        versionCode 6
+        versionName "0.24"
+
+        multiDexEnabled true
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}

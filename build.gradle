@@ -1,0 +1,51 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.1.2'
+    }
+}
+
+allprojects {
+    apply plugin: "idea"
+
+    version = '1.0'
+
+    ext {
+        appName = 'LogEverything'
+        appcompat_library_version = '23.2.0'
+        support_library_version = '23.2.0'
+        gms_library_version = '8.3.0'
+
+        //compileSdkVersion
+        android_compile_version = 23
+
+        //buildToolsVersion
+        android_version = '23.0.2'
+
+        android_minSdkVersion = 18
+        android_targetSdkVersion = 22
+
+        gson_library_version = '2.6.2'
+        okhttp_library_version = '2.7.5'
+        okio_library_version = '1.6.0'
+
+    }
+    repositories {
+        mavenCentral()
+    }
+}
+
+project(":app") {
+    apply plugin: "android"
+
+    configurations { natives }
+
+    dependencies {
+        compile "com.squareup.okhttp:okhttp:${okhttp_library_version}"
+        compile "com.google.android.gms:play-services-analytics:8.4.0"
+        compile "com.google.android.gms:play-services-location:8.4.0"
+        compile 'com.google.code.gson:gson:2.6.2'
+    }
+}

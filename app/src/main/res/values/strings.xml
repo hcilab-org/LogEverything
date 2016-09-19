@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+   <string name="app_name">Log Everything</string>
+   <string name="hello_world">Hello world!</string>
+   
+   <string name="action_settings">Settings</string>
+   <string name="action_dropbox">Auth Dropbox</string>
+   
+   <string name="start_button">Start Logging</string>
+   <string name="stop_button">Stop Logging</string>
+   
+   <string name="sensor_settings_save">Save</string>
+	<string name="sensor_settings_cancel">Cancel</string>  
+	<string name="sensor_settings_none">No settings available for this sensor</string>  
+	
+	<string name="notif_ticker">Log Everything enabled</string>
+    <string name="notif_title">Log Everything enabled</string>
+	<string name="notif_text">Touch to disable logging</string>
+	
+	<string name="saving_to">Saving logs to</string>
+	<string name="accessibility_service_description">TEST</string>
+	<string name="accessibility_button">Accessibility</string>
+	<string name="accessibility_button_On">Enabled Accessibility</string>
+	<string name="accessibility_button_Off">Disabled Accessibility</string>
+	<string name="settings">Settings</string>
+	
+	<string name="dbname">LogEverything</string>
+	<string name="dbversion">2</string>
+	<string name="dbTableSenorList">SensorList</string>
+	<string name="dbColumnId">_id</string>
+	<string name="dbColumnName">name</string>
+	
+	<string name="dbColumnIsAvailable">isavailable</string>
+	<string name="dbColumnIsEnabled">isenabled</string>	
+	
+	<string name="dbColumnSettingsState">settingsstate</string>
+	<string name="dbColumnSettings">settings</string>
+</resources>

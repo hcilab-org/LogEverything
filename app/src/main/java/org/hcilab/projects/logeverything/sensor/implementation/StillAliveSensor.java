@@ -1,0 +1,129 @@
+package org.hcilab.projects.logeverything.sensor.implementation;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import org.hcilab.projects.logeverything.activity.CONST;
+import org.hcilab.projects.logeverything.sensor.AbstractSensor;
+
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.provider.Settings.Secure;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
+
+public class StillAliveSensor extends AbstractSensor {
+	
+	private static final long serialVersionUID = 1L;
+		
+	private long count = -1;
+
+    private final OkHttpClient client = new OkHttpClient();
+
+	public StillAliveSensor() {
+		TAG = getClass().getName();
+		SENSOR_NAME = "Still Alive";
+		FILE_NAME = "stillalive.csv";
+	}
+
+	@Override
+	public View getSettingsView(Context context) {
+		String deviceId = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
+		if(deviceId == null) {
+			deviceId = "NULL";
+		}
+
+		TextView text = new TextView(context);
+		text.setText("Device Id: " + deviceId);
+		text.setPadding(20, 20, 20, 20);
+		return text;
+	}
+
+	@Override
+	public boolean isAvailable(Context context) {
+		return true;
+	}
+
+	@Override
+	public void start(Context context) {
+		super.start(context);
+		if (!m_isSensorAvailable)
+			return;
+		
+		if (this.m_FileWriter == null)
+		{
+			try {
+				m_FileWriter = new FileWriter(new File(getFilePath()), true);
+			} catch (IOException e) {
+				Log.e(TAG, e.toString());
+			}	
+		}
+		
+		count++;
+		if(count % 15 != 0) {
+			return;
+		}
+		
+		try {
+			m_FileWriter.write(getTime() + "\n");
+		} catch (IOException e) {
+			Log.e(TAG, e.toString());
+		}
+		
+		if(isNetworkAvailable(context)) {
+			//Log.d(TAG, "Network available");
+            //TODO:
+		}
+	}
+
+	@Override
+	public void stop() {
+		try {
+			m_FileWriter.close();
+		} catch (IOException e) {
+			Log.e(TAG, e.toString());
+		}
+	}
+
+	private boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+
+    private void post(Context context) {
+
+        String json = "{}";
+
+        String deviceId = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
+
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+        Request request = new Request.Builder()
+                .url("http://projects.hcilab.org/tapsnap/logeverything/php/stillalive.php?id=" + deviceId)
+                .post(body).build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                // TODO
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+
+                // TODO
+            }
+        });
+    }
+}
