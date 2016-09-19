@@ -10,7 +10,7 @@ Below is the BibTex entry for citing LogEverything
 
 
 <pre>
-@misc{Weber014,
+@misc{Weber:2014,
   author = {Dominik Weber and Sven Mayer},
   title = {LogEverything},
   year = {2014},
