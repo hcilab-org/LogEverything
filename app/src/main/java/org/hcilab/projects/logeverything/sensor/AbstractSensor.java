@@ -1,24 +1,29 @@
 package org.hcilab.projects.logeverything.sensor;
 
+import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Serializable;
 
 import org.hcilab.projects.logeverything.activity.CONST;
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 
 public abstract class AbstractSensor implements Serializable  {
-	
+
+	protected String TAG;
 	private static final long serialVersionUID = 1L;
 	
 	protected String SENSOR_NAME;
 	private boolean m_IsEnabled = true;
 	protected String FILE_NAME;
-	protected String TAG;
+	protected String m_FileHeader;
+
 	private String m_Settings = "";
+
+
 	
 	protected boolean m_isSensorAvailable = false;
 	
@@ -70,14 +75,20 @@ public abstract class AbstractSensor implements Serializable  {
 		m_isSensorAvailable = isAvailable(context);
 		if (!m_isSensorAvailable)
 			Log.i(TAG, "Sensor not available");
+
+        if (this.m_FileWriter == null)
+        {
+            try {
+                m_FileWriter = new FileWriter(new File(getFilePath()), true);
+                m_FileWriter.write(m_FileHeader + "\n");
+            } catch (IOException e) {
+                Log.e(TAG, e.toString());
+            }
+        }
 	}
 	
 	abstract public void stop();
-	
-	protected String getTime()
-	{
-		return CONST.dateFormat.format(System.currentTimeMillis());
-	}
+
 
 	public boolean isRunning() {
 		return m_IsRunning;

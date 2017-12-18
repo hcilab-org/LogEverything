@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 
-import org.hcilab.projects.logeverything.activity.CONST;
 import org.hcilab.projects.logeverything.handler.HandlerListener;
 import org.hcilab.projects.logeverything.handler.TouchHandler;
 import org.hcilab.projects.logeverything.sensor.AbstractSensor;
@@ -30,6 +29,7 @@ public class TouchSensor extends AbstractSensor implements HandlerListener {
 		TAG = getClass().getSimpleName();
 		SENSOR_NAME = "Touch Log";
 		FILE_NAME = "touch.csv";
+		m_FileHeader = "TimeUnix,Finger,Event,X,Y,Prs,Q";
 	}
 	
 	@Override
@@ -47,18 +47,6 @@ public class TouchSensor extends AbstractSensor implements HandlerListener {
 		super.start(context);
 		if (!m_isSensorAvailable)
 			return;
-		
-		if (this.m_FileWriter == null)
-		{
-			try {
-				m_FileWriter = new FileWriter(new File(getFilePath()), true);
-				m_FileWriter.write("timestamp,finger,event,x,y,prs,q");
-				m_FileWriter.write("\n");		
-				m_FileWriter.flush();
-			} catch (IOException e) {
-				Log.e(TAG, e.toString());
-			}	
-		}
 		
 		// Start up the thread running the service.  Note that we create a
 		// separate thread because the service normally runs in the process's

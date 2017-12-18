@@ -1,10 +1,7 @@
 package org.hcilab.projects.logeverything.sensor.implementation;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
-import org.hcilab.projects.logeverything.activity.CONST;
 import org.hcilab.projects.logeverything.sensor.AbstractSensor;
 
 import android.app.ActivityManager;
@@ -21,6 +18,7 @@ public class AppSensor extends AbstractSensor {
 		TAG = getClass().getName();
 		SENSOR_NAME = "App";
 		FILE_NAME = "app.csv";
+		m_FileHeader = "TimeUnix,Package";
 	}
 
 
@@ -46,25 +44,16 @@ public class AppSensor extends AbstractSensor {
 	@Override
 	public void start(Context context) {
 		super.start(context);
+        Long t = System.currentTimeMillis();
 		if (!m_isSensorAvailable)
 			return;
-		
-		if (this.m_FileWriter == null)
-		{
-			try {
-				m_FileWriter = new FileWriter(new File(getFilePath()), true);
-				m_FileWriter.write("timestamp,package");
-				m_FileWriter.write("\n");
-			} catch (IOException e) {
-				Log.e(TAG, e.toString());
-			}	
-		}
+
 		String info = getForegroundApp(context);
 		try {
 			if (info == null) {
-				m_FileWriter.write(getTime() + ",NULL");
+				m_FileWriter.write(t  + ",NULL");
 			} else {
-				m_FileWriter.write(getTime() + "," + info);
+				m_FileWriter.write(t + "," + info);
 			}
 			m_FileWriter.write("\n");
 			m_FileWriter.flush();

@@ -1,10 +1,7 @@
 package org.hcilab.projects.logeverything.sensor.implementation;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
-import org.hcilab.projects.logeverything.activity.CONST;
 import org.hcilab.projects.logeverything.sensor.AbstractSensor;
 
 import android.content.BroadcastReceiver;
@@ -29,6 +26,7 @@ public class ScreenOnOffSensor extends AbstractSensor {
 		TAG = getClass().getName();
 		SENSOR_NAME = "Screen On/Off";
 		FILE_NAME = "screen_on_off.csv";
+		m_FileHeader = "TimeUnix,Value";
 	}
 	
 	public View getSettingsView(Context context) {
@@ -42,28 +40,18 @@ public class ScreenOnOffSensor extends AbstractSensor {
 	@Override
 	public void start(Context context) {	
 		super.start(context);
+		Long t = System.currentTimeMillis();
 		if (!m_isSensorAvailable)
 			return;
-		
-		if (this.m_FileWriter == null)
-		{
-			try {
-				m_FileWriter = new FileWriter(new File(getFilePath()), true);
-				m_FileWriter.write("timestamp,value");
-				m_FileWriter.write("\n");
-			} catch (IOException e) {
-				Log.e(TAG, e.toString());
-			}	
-		}
 		
 		PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 		boolean isScreenOn = pm.isScreenOn();
 		this.m_context = context;
 		try {			
 			if(isScreenOn) {
-				m_FileWriter.write(getTime() + ",on");
+				m_FileWriter.write(t + ",on");
 			} else {
-				m_FileWriter.write(getTime() + ",off");
+				m_FileWriter.write(t + ",off");
 			}			
 			m_FileWriter.write("\n");
 			m_FileWriter.flush();			
@@ -105,14 +93,14 @@ public class ScreenOnOffSensor extends AbstractSensor {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			
+			Long t = System.currentTimeMillis();
 			if(m_IsRunning) {
 				try {
 					if(intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-						m_FileWriter.write(getTime() + ",off");
+						m_FileWriter.write(t + ",off");
 						wasScreenOn = false;
 					} else if(intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-						m_FileWriter.write(getTime() + ",on");
+						m_FileWriter.write(t + ",on");
 						wasScreenOn = true;
 					}
 					//Log.d(TAG, intent.getAction().toString());
@@ -127,12 +115,13 @@ public class ScreenOnOffSensor extends AbstractSensor {
 	}
 	
     public void onPause() {
+		Long t = System.currentTimeMillis();
     	if(m_IsRunning) {
         // WHEN THE SCREEN IS ABOUT TO TURN OFF
 	        if (wasScreenOn) {
 	            // THIS IS THE CASE WHEN ONPAUSE() IS CALLED BY THE SYSTEM DUE TO A SCREEN STATE CHANGE
 	        	try {
-					m_FileWriter.write(getTime() + ",off");
+					m_FileWriter.write(t + ",off");
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					Log.e(TAG, e.toString());
@@ -142,12 +131,13 @@ public class ScreenOnOffSensor extends AbstractSensor {
     }
  
     public void onResume() {
+		Long t = System.currentTimeMillis();
     	if(m_IsRunning) {
 	        // ONLY WHEN SCREEN TURNS ON
 	        if (!wasScreenOn) {
 	            // THIS IS WHEN ONRESUME() IS CALLED DUE TO A SCREEN STATE CHANGE
 	        	try {
-					m_FileWriter.write(getTime() + ",on");
+					m_FileWriter.write(t + ",on");
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					Log.e(TAG, e.toString());

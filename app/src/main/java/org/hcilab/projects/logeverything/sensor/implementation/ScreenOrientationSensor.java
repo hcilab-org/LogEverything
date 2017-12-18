@@ -1,10 +1,7 @@
 package org.hcilab.projects.logeverything.sensor.implementation;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
-import org.hcilab.projects.logeverything.activity.CONST;
 import org.hcilab.projects.logeverything.sensor.AbstractSensor;
 
 import android.content.BroadcastReceiver;
@@ -29,6 +26,7 @@ public class ScreenOrientationSensor extends AbstractSensor {
 		TAG = getClass().getName();
 		SENSOR_NAME = "Screen Orientation";
 		FILE_NAME = "screen_orientation.csv";
+		m_FileHeader = "TimeUnix,Value";
 	}
 	
 	public View getSettingsView(Context context) {
@@ -42,6 +40,7 @@ public class ScreenOrientationSensor extends AbstractSensor {
 	@Override
 	public void start(Context pContext) {
 		super.start(pContext);
+		Long t = System.currentTimeMillis();
 		if (!m_isSensorAvailable)
 			return;
 		
@@ -49,20 +48,17 @@ public class ScreenOrientationSensor extends AbstractSensor {
 		if (this.m_FileWriter == null)
 		{
 			try {
-				m_FileWriter = new FileWriter(new File(getFilePath()), true);
-				m_FileWriter.write("timestamp,value");
-				m_FileWriter.write("\n");
 				if(m_context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-		            m_FileWriter.write(getTime() + ",LANDSCAPE");
+		            m_FileWriter.write(t + ",LANDSCAPE");
 		        }
 		        else if(m_context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-		            m_FileWriter.write(getTime() + ",PORTRAIT");
+		            m_FileWriter.write(t + ",PORTRAIT");
 		        }
 		        else if(m_context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_SQUARE){
-		            m_FileWriter.write(getTime() + ",SQUARE");
+		            m_FileWriter.write(t + ",SQUARE");
 		        }
 		        else {
-		            m_FileWriter.write(getTime() + ",UNDEFINED");
+		            m_FileWriter.write(t + ",UNDEFINED");
 		        }
 				m_FileWriter.write("\n");
 				m_FileWriter.flush();
@@ -102,17 +98,21 @@ public class ScreenOrientationSensor extends AbstractSensor {
 	public class ScreenReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			Long t = System.currentTimeMillis();
 			if(m_IsRunning) {
 				if (intent.getAction().equals(Intent.ACTION_CONFIGURATION_CHANGED) ) {
 	                try {
 		                if(context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-		                    m_FileWriter.write(getTime() + ",LANDSCAPE");
+		                    m_FileWriter.write(t + ",LANDSCAPE");
 		                }
 		                else if(context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-		                    m_FileWriter.write(getTime() + ",PORTRAIT");
+		                    m_FileWriter.write(t + ",PORTRAIT");
 		                }
+						else if(context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_SQUARE){
+							m_FileWriter.write(t + ",SQUARE");
+						}
 		                else {
-		                    m_FileWriter.write(getTime() + ",UNDEFINED");
+		                    m_FileWriter.write(t + ",UNDEFINED");
 		                }
 						m_FileWriter.write("\n");
 						m_FileWriter.flush();

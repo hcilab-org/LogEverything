@@ -1,10 +1,7 @@
 package org.hcilab.projects.logeverything.sensor.implementation;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
-import org.hcilab.projects.logeverything.activity.CONST;
 import org.hcilab.projects.logeverything.sensor.AbstractSensor;
 
 import android.content.Context;
@@ -22,6 +19,7 @@ public class RingtoneVolumeSensor extends AbstractSensor {
 		TAG = getClass().getName();
 		SENSOR_NAME = "Ringtone Volume";
 		FILE_NAME = "ringtone_volume.csv";
+		m_FileHeader = "TimeUnix,Value";
 	}
 	
 	@Override
@@ -37,23 +35,14 @@ public class RingtoneVolumeSensor extends AbstractSensor {
 	@Override
 	public void start(Context context) {
 		super.start(context);
+		Long t = System.currentTimeMillis();
 		if (!m_isSensorAvailable)
 			return;
-		
-		if (this.m_FileWriter == null)
-		{
-			try {
-				m_FileWriter = new FileWriter(new File(getFilePath()), true);
-				m_FileWriter.write("timestamp,value");
-				m_FileWriter.write("\n");
-			} catch (IOException e) {
-				Log.e(TAG, e.toString());
-			}	
-		}
+
 		AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		int currentVolume = audio.getStreamVolume(AudioManager.STREAM_RING);
 		try {		
-			m_FileWriter.write(getTime() + "," + currentVolume);			
+			m_FileWriter.write(t + "," + currentVolume);
 			m_FileWriter.write("\n");
 			m_FileWriter.flush();			
 		} catch (IOException e) {

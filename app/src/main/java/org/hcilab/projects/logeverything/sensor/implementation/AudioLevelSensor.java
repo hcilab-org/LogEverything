@@ -1,10 +1,7 @@
 package org.hcilab.projects.logeverything.sensor.implementation;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
-import org.hcilab.projects.logeverything.activity.CONST;
 import org.hcilab.projects.logeverything.sensor.AbstractSensor;
 
 import android.content.Context;
@@ -27,6 +24,7 @@ public class AudioLevelSensor extends AbstractSensor {
 		TAG = getClass().getName();
 		SENSOR_NAME = "Audio Level";
 		FILE_NAME = "audiolevel.csv";
+		m_FileHeader = "Timestamp,Value";
 	}
 		
 	public View getSettingsView(Context context) {	
@@ -42,17 +40,7 @@ public class AudioLevelSensor extends AbstractSensor {
 		super.start(context);
 		if (!m_isSensorAvailable)
 			return;
-		
-		if (this.m_FileWriter == null)
-		{
-			try {
-				m_FileWriter = new FileWriter(new File(getFilePath()), true);
-				m_FileWriter.write("timestamp,value");
-				m_FileWriter.write("\n");
-			} catch (IOException e) {
-				Log.e(TAG, e.toString());
-			}	
-		}		
+
 		try {
 			handler.postDelayed(new Runnable() {
 				public void run() {
@@ -103,13 +91,14 @@ public class AudioLevelSensor extends AbstractSensor {
 	}
 	
 	private void getNoiseLevel() {
+		Long t = System.currentTimeMillis();
 		if (mediaRecorder == null)
 			return;
 		
 		try {
 			int amplitude = mediaRecorder.getMaxAmplitude();
 			if (m_FileWriter!=null)
-			m_FileWriter.write(getTime()+","+amplitude+"\n");
+			m_FileWriter.write(t+","+amplitude+"\n");
 			
 		} catch (IOException e) {
 			Log.d(TAG, e.toString());

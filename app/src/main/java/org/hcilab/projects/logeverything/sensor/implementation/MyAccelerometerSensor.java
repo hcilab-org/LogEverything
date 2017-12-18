@@ -1,10 +1,7 @@
 package org.hcilab.projects.logeverything.sensor.implementation;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
-import org.hcilab.projects.logeverything.activity.CONST;
 import org.hcilab.projects.logeverything.sensor.AbstractSensor;
 
 import android.content.Context;
@@ -31,6 +28,7 @@ public class MyAccelerometerSensor extends AbstractSensor implements SensorEvent
 		m_IsRunning = false;
 		SENSOR_NAME = "Accelerometer";
 		FILE_NAME = "accelerometer.csv";
+		m_FileHeader = "TimeUnix,X,Y,Z,Reliable";
 	}
 
 	public View getSettingsView(Context context) {
@@ -67,21 +65,10 @@ public class MyAccelerometerSensor extends AbstractSensor implements SensorEvent
 		super.start(context);
 		if (!m_isSensorAvailable)
 			return;
-		
-		if (this.m_FileWriter == null) {
-			try {
-				m_FileWriter = new FileWriter(new File(getFilePath()), true);
-				m_FileWriter.write("timestamp,x,y,z,reliable");
-				m_FileWriter.write("\n");
-				m_FileWriter.flush();
-			} catch (IOException e) {
-				Log.e(TAG, e.toString());
-			}
-		}
-		sensorManager = (SensorManager) context
-				.getSystemService(Context.SENSOR_SERVICE);
+
+		sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 		sensorManager.registerListener(this,
-				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 				SensorManager.SENSOR_DELAY_NORMAL);
 		m_IsRunning = true;
 		count = 0;
@@ -108,15 +95,16 @@ public class MyAccelerometerSensor extends AbstractSensor implements SensorEvent
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
+        Long t = System.currentTimeMillis();
 		if (m_IsRunning) {
 			try {
 				count++;
 				if (event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
-					m_FileWriter.write(getTime() + ","
+					m_FileWriter.write(t + ","
 							+ event.values[0] + "," + event.values[1] + ","
 							+ event.values[2] + ",false");
 				} else {
-					m_FileWriter.write(getTime() + ","
+					m_FileWriter.write(t + ","
 							+ event.values[0] + "," + event.values[1] + ","
 							+ event.values[2] + ",true");
 				}

@@ -179,9 +179,9 @@ public class SensorDatabaseHelper extends SQLiteOpenHelper {
 	/***
 	 * 
 	 * @param pId Id of the element that that shold be updated
-	 * @param pSettingsSate
-	 * @param pSettings
-	 * @return
+	 * @param pSettingsSate Setting State
+	 * @param pSettings Setting String
+	 * @return id in the DB
 	 */
 	public int updateSettings (Integer pId, Integer pSettingsSate, String pSettings)
 	{

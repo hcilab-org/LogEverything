@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.hcilab.projects.logeverything.activity.CONST;
 import org.hcilab.projects.logeverything.sensor.AbstractSensor;
 
 import android.content.Context;
@@ -36,6 +35,7 @@ public class StillAliveSensor extends AbstractSensor {
 		TAG = getClass().getName();
 		SENSOR_NAME = "Still Alive";
 		FILE_NAME = "stillalive.csv";
+        m_FileHeader = "";
 	}
 
 	@Override
@@ -59,6 +59,7 @@ public class StillAliveSensor extends AbstractSensor {
 	@Override
 	public void start(Context context) {
 		super.start(context);
+        Long t = System.currentTimeMillis();
 		if (!m_isSensorAvailable)
 			return;
 		
@@ -77,7 +78,7 @@ public class StillAliveSensor extends AbstractSensor {
 		}
 		
 		try {
-			m_FileWriter.write(getTime() + "\n");
+			m_FileWriter.write(t + "\n");
 		} catch (IOException e) {
 			Log.e(TAG, e.toString());
 		}

@@ -143,7 +143,7 @@ public class MainActivity extends Activity {
 		context.startService(intent);
 		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		PendingIntent pendingIntent = getPendingIntent(context);
-		long m_AlarmInterval = 50 * 1000;
+		long m_AlarmInterval = 60 * 1000;
 		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + m_AlarmInterval, m_AlarmInterval, pendingIntent);
 		SharedPreferences sp = context.getSharedPreferences(CONST.SP_LOG_EVERYTHING, Activity.MODE_PRIVATE);
 		sp.edit().putBoolean(CONST.KEY_LOG_EVERYTHING_RUNNING, true).apply();

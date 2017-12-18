@@ -1,10 +1,7 @@
 package org.hcilab.projects.logeverything.sensor.implementation;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
-import org.hcilab.projects.logeverything.activity.CONST;
 import org.hcilab.projects.logeverything.sensor.AbstractSensor;
 
 import android.content.Context;
@@ -12,7 +9,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Environment;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -34,6 +30,7 @@ public class MyProximitySensor extends AbstractSensor implements SensorEventList
 		TAG = getClass().getName();
 		SENSOR_NAME = "Proximity";
 		FILE_NAME = "proximity.csv";
+		m_FileHeader = "TimeUnix,Value,Reliable";
 	}
 	
 	
@@ -70,18 +67,7 @@ public class MyProximitySensor extends AbstractSensor implements SensorEventList
 		super.start(context);
 		if (!m_isSensorAvailable)
 			return;
-		
-		if (this.m_FileWriter == null)
-		{
-			try {
-				m_FileWriter = new FileWriter(new File(getFilePath()), true);
-				m_FileWriter.write("timestamp,value,reliable");
-				m_FileWriter.write("\n");
-				m_FileWriter.flush();
-			} catch (IOException e) {
-				Log.e(TAG, e.toString());
-			}	
-		}
+
 		sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 		sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY), SensorManager.SENSOR_DELAY_FASTEST);		
 		m_IsRunning = true;
@@ -110,14 +96,14 @@ public class MyProximitySensor extends AbstractSensor implements SensorEventList
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		Log.d(TAG, "onSensorChanged");
+		Long t = System.currentTimeMillis();
 		if(m_IsRunning) {
 			try {
 				count++;
 				if(event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
-					m_FileWriter.write(getTime() + "," + event.values[0] + ",false");
+					m_FileWriter.write(t + "," + event.values[0] + ",false");
 				} else {
-					m_FileWriter.write(getTime() + "," + event.values[0] + ",true");
+					m_FileWriter.write(t + "," + event.values[0] + ",true");
 				}
 				m_FileWriter.write("\n");
 				int flushLevel = 100;

@@ -1,10 +1,7 @@
 package org.hcilab.projects.logeverything.sensor.implementation;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
-import org.hcilab.projects.logeverything.activity.CONST;
 import org.hcilab.projects.logeverything.sensor.AbstractSensor;
 
 import android.content.Context;
@@ -22,6 +19,7 @@ public class WifiSensor extends AbstractSensor {
 		TAG = getClass().getName();
 		SENSOR_NAME = "Wi-Fi SSID";
 		FILE_NAME = "wifi_ssid.csv";
+		m_FileHeader = "TimeUnix,Ssid";
 	}
 
 	@Override
@@ -37,24 +35,15 @@ public class WifiSensor extends AbstractSensor {
 	@Override
 	public void start(Context context) {
 		super.start(context);
+        Long t = System.currentTimeMillis();
 		if (!m_isSensorAvailable)
 			return;		
-		
-		if (this.m_FileWriter == null)
-		{
-			try {
-				m_FileWriter = new FileWriter(new File(getFilePath()), true);
-				m_FileWriter.write("timestamp,ssid");
-				m_FileWriter.write("\n");		
-			} catch (IOException e) {
-				Log.e(TAG, e.toString());
-			}	
-		}
+
 		WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 		WifiInfo wifiInfo = wifiManager.getConnectionInfo();		
 		String ssid = (wifiInfo.getSSID() == null) ? "NONE" : wifiInfo.getSSID();
 		try {
-			m_FileWriter.write(getTime() + "," + ssid);			
+			m_FileWriter.write(t + "," + ssid);
 			m_FileWriter.write("\n");
 			m_FileWriter.flush();			
 		} catch (IOException e) {

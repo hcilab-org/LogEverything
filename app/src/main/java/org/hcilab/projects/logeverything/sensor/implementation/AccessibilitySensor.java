@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.hcilab.projects.logeverything.activity.CONST;
 import org.hcilab.projects.logeverything.sensor.AbstractSensor;
 import org.hcilab.projects.logeverything.service.AccessibilityLogService;
 
@@ -21,7 +20,7 @@ public class AccessibilitySensor extends AbstractSensor {
 	
 	private Context m_Context = null;
 	private Intent m_Intent;
-	private long count;
+	private long m_Count;
 
 	private DataUpdateReceiver m_Receiver;
 	
@@ -31,6 +30,7 @@ public class AccessibilitySensor extends AbstractSensor {
 		TAG = getClass().getName();
 		SENSOR_NAME = "Accessibility";
 		FILE_NAME = "accessibility.csv";
+		m_FileHeader = "TimeUnix,Type,Class,Package,Text";
 	}
 	
 	@Override
@@ -50,16 +50,6 @@ public class AccessibilitySensor extends AbstractSensor {
 			return;
 		
 		m_Context = context;
-
-		try {
-			m_FileWriter = new FileWriter(new File(getFilePath()), true);
-			m_FileWriter.write("time,type,class,package,text");
-			m_FileWriter.write("\n");
-			m_FileWriter.flush();
-		} catch (IOException e) {
-			Log.e(TAG, e.toString());
-		}
-		
 		
 		m_Intent = new Intent(m_Context, AccessibilityLogService.class);
 		context.startService(m_Intent);
@@ -96,15 +86,13 @@ public class AccessibilitySensor extends AbstractSensor {
 	        		try {
 		        		if (m_FileWriter == null)
 							m_FileWriter = new FileWriter(new File(getFilePath()), true);
-							
-		        		//Log.i(TAG, intent.getStringExtra(android.content.Intent.EXTRA_TEXT));
-		        		
-		    			count++;
+
+		    			m_Count++;
 		    			m_FileWriter.write(intent.getStringExtra(android.content.Intent.EXTRA_TEXT));
 						int flushLevel = 50;
-						if(count % flushLevel == 0) {
+						if(m_Count % flushLevel == 0) {
 		    				m_FileWriter.flush();
-		    				count = 1;
+		    				m_Count = 1;
 		    			}
 	        		} catch (IOException e) {
 	        			Log.e(TAG, e.toString());
