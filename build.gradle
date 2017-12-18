@@ -1,9 +1,13 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath 'com.android.tools.build:gradle:3.0.1'
     }
 }
 
@@ -14,26 +18,32 @@ allprojects {
 
     ext {
         appName = 'LogEverything'
-        appcompat_library_version = '23.2.0'
-        support_library_version = '23.2.0'
-        gms_library_version = '8.3.0'
+        appcompat_library_version = '27.0.1'
+        support_library_version = '27.0.1'
 
         //compileSdkVersion
-        android_compile_version = 23
+        android_compile_version = 26
 
         //buildToolsVersion
-        android_version = '23.0.2'
+        android_version = '26.0.2'
 
         android_minSdkVersion = 18
         android_targetSdkVersion = 22
 
-        gson_library_version = '2.6.2'
-        okhttp_library_version = '2.7.5'
-        okio_library_version = '1.6.0'
+        // https://developers.google.com/android/guides/setup
+        gms_library_version = '11.6.0'
 
+        // https://mvnrepository.com/artifact/com.google.code.gson/gson
+        gson_library_version = '2.8.2'
+        // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
+        okhttp_library_version = '3.9.0'
     }
     repositories {
         mavenCentral()
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
     }
 }
 
@@ -43,9 +53,9 @@ project(":app") {
     configurations { natives }
 
     dependencies {
-        compile "com.squareup.okhttp:okhttp:${okhttp_library_version}"
-        compile "com.google.android.gms:play-services-analytics:8.4.0"
-        compile "com.google.android.gms:play-services-location:8.4.0"
-        compile 'com.google.code.gson:gson:2.6.2'
+        compile group: 'com.squareup.okhttp3', name: 'okhttp', version: "$okhttp_library_version"
+        compile "com.google.android.gms:play-services-analytics:$gms_library_version"
+        compile "com.google.android.gms:play-services-location:$gms_library_version"
+        compile "com.google.code.gson:gson:$gson_library_version"
     }
 }

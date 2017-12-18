@@ -15,12 +15,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 
 public class StillAliveSensor extends AbstractSensor {
 	
@@ -103,7 +105,6 @@ public class StillAliveSensor extends AbstractSensor {
 
 
     private void post(Context context) {
-
         String json = "{}";
 
         String deviceId = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
@@ -114,16 +115,15 @@ public class StillAliveSensor extends AbstractSensor {
                 .post(body).build();
 
         client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                // TODO
-            }
+			@Override
+			public void onFailure(Call call, IOException e) {
+				// TODO
+			}
 
-            @Override
-            public void onResponse(Response response) throws IOException {
-
-                // TODO
-            }
-        });
+			@Override
+			public void onResponse(Call call, Response response) throws IOException {
+				// TODO
+			}
+		});
     }
 }
