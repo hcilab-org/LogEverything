@@ -44,20 +44,25 @@ public class AppSensor extends AbstractSensor {
 	@Override
 	public void start(Context context) {
 		super.start(context);
+
         Long t = System.currentTimeMillis();
 		if (!m_isSensorAvailable)
 			return;
 
+		if (m_OutputStream == null){
+			Log.e(TAG, "FileWriter is null");
+		}
+
 		String info = getForegroundApp(context);
 		try {
 			if (info == null) {
-				m_FileWriter.write(t  + ",NULL");
+				m_OutputStream.write((t  + ",NULL").getBytes());
 			} else {
-				m_FileWriter.write(t + "," + info);
+				m_OutputStream.write((t + "," + info).getBytes());
 			}
-			m_FileWriter.write("\n");
-			m_FileWriter.flush();
-		} catch (IOException e) {
+			m_OutputStream.write(("\n").getBytes());
+			m_OutputStream.flush();
+		} catch (Exception e) {
 			Log.e(TAG, e.toString());
 		}
 		m_IsRunning = true;
@@ -68,10 +73,10 @@ public class AppSensor extends AbstractSensor {
 		if (m_IsRunning) {
 			m_IsRunning = false;
 			try {
-				m_FileWriter.flush();
-				m_FileWriter.close();
-				m_FileWriter = null;
-			} catch (IOException e) {
+				m_OutputStream.flush();
+				m_OutputStream.close();
+				m_OutputStream = null;
+			} catch (Exception e) {
 				Log.e(TAG, e.toString());
 			}
 		}

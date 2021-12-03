@@ -62,24 +62,15 @@ public class StillAliveSensor extends AbstractSensor {
         Long t = System.currentTimeMillis();
 		if (!m_isSensorAvailable)
 			return;
-		
-		if (this.m_FileWriter == null)
-		{
-			try {
-				m_FileWriter = new FileWriter(new File(getFilePath()), true);
-			} catch (IOException e) {
-				Log.e(TAG, e.toString());
-			}	
-		}
-		
+
 		count++;
 		if(count % 15 != 0) {
 			return;
 		}
 		
 		try {
-			m_FileWriter.write(t + "\n");
-		} catch (IOException e) {
+			m_OutputStream.write((t + "\n").getBytes());
+		} catch (Exception e) {
 			Log.e(TAG, e.toString());
 		}
 		
@@ -92,8 +83,8 @@ public class StillAliveSensor extends AbstractSensor {
 	@Override
 	public void stop() {
 		try {
-			m_FileWriter.close();
-		} catch (IOException e) {
+			m_OutputStream.close();
+		} catch (Exception e) {
 			Log.e(TAG, e.toString());
 		}
 	}

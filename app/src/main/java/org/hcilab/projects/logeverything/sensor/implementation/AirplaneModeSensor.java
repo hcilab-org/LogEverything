@@ -1,7 +1,5 @@
 package org.hcilab.projects.logeverything.sensor.implementation;
 
-import java.io.IOException;
-
 import org.hcilab.projects.logeverything.sensor.AbstractSensor;
 
 import android.content.Context;
@@ -45,13 +43,12 @@ public class AirplaneModeSensor extends AbstractSensor {
 
 		try {		
 			if(isAirplaneModeOn(context)) {
-				m_FileWriter.write(t + ",on");
+				m_OutputStream.write((t + ",on\n").getBytes());
 			} else {
-				m_FileWriter.write(t + ",off");
-			}			
-			m_FileWriter.write("\n");
-			m_FileWriter.flush();			
-		} catch (IOException e) {
+				m_OutputStream.write((t + ",off\n").getBytes());
+			}
+			m_OutputStream.flush();
+		} catch (Exception e) {
 			Log.e(TAG, e.toString());
 		}
 		m_IsRunning = true;
@@ -62,10 +59,10 @@ public class AirplaneModeSensor extends AbstractSensor {
 		if(m_IsRunning) {
 			m_IsRunning = false;
 			try {
-				m_FileWriter.flush();
-				m_FileWriter.close();
-				m_FileWriter = null;
-			} catch (IOException e) {
+				m_OutputStream.flush();
+				m_OutputStream.close();
+				m_OutputStream = null;
+			} catch (Exception e) {
 				Log.e(TAG, e.toString());
 			}		
 			

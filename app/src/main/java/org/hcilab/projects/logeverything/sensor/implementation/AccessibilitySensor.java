@@ -84,14 +84,11 @@ public class AccessibilitySensor extends AbstractSensor {
 	        if (intent.getAction().equals(AccessibilityLogService.TAG)) {
 	        	if(m_IsRunning) {
 	        		try {
-		        		if (m_FileWriter == null)
-							m_FileWriter = new FileWriter(new File(getFilePath()), true);
-
 		    			m_Count++;
-		    			m_FileWriter.write(intent.getStringExtra(android.content.Intent.EXTRA_TEXT));
+		    			m_OutputStream.write((intent.getStringExtra(android.content.Intent.EXTRA_TEXT)).getBytes());
 						int flushLevel = 50;
 						if(m_Count % flushLevel == 0) {
-		    				m_FileWriter.flush();
+		    				m_OutputStream.flush();
 		    				m_Count = 1;
 		    			}
 	        		} catch (IOException e) {

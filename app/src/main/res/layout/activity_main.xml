@@ -4,11 +4,13 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <LinearLayout
-        android:id="@+id/start_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical" >
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/main_color"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme" />
 
         <ListView
             android:id="@+id/sensor_list"
@@ -32,21 +34,14 @@
             android:layout_gravity="center_horizontal"
             android:layout_margin="5dp"
             android:text="@string/start_button" />
-    </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/stop_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical"
-        android:visibility="gone" >
 
         <Button
             android:id="@+id/stop_button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"
             android:text="@string/stop_button" />
-    </RelativeLayout>
 
 </LinearLayout>

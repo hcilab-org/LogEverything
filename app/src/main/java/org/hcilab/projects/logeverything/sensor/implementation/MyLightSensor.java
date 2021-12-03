@@ -2,6 +2,7 @@ package org.hcilab.projects.logeverything.sensor.implementation;
 
 import java.io.IOException;
 
+import org.hcilab.projects.logeverything.activity.CONST;
 import org.hcilab.projects.logeverything.sensor.AbstractSensor;
 
 import android.content.Context;
@@ -79,11 +80,12 @@ public class MyLightSensor extends AbstractSensor implements SensorEventListener
 			m_IsRunning = false;
 			sensorManager.unregisterListener(this);
 			try {
-				m_FileWriter.flush();
-				m_FileWriter.close();
-				m_FileWriter = null;
+				m_OutputStream.flush();
+				m_OutputStream.close();
+				m_OutputStream = null;
 			} catch (IOException e) {
 				Log.e(TAG, e.toString());
+			} catch (NullPointerException ignored) {
 			}
 		}	
 	}
@@ -99,16 +101,15 @@ public class MyLightSensor extends AbstractSensor implements SensorEventListener
 			try {
 				count++;
 				if(event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
-					m_FileWriter.write(t + "," + event.values[0] + ",false");
+					m_OutputStream.write((t + "," + CONST.numberFormat.format(event.values[0]) + ",false\n").getBytes());
 				} else {
-					m_FileWriter.write(t + "," + event.values[0] + ",true");
-				}		
-				m_FileWriter.write("\n");
+					m_OutputStream.write((t + "," + CONST.numberFormat.format(event.values[0]) + ",true\n").getBytes());
+				}
 				int flushLevel = 100;
 				if(count % flushLevel == 0) {
-					m_FileWriter.flush();
+					m_OutputStream.flush();
 				}
-			} catch (IOException e) {
+			} catch (Exception e) {
 				Log.e(TAG, e.toString());
 			}
 		}

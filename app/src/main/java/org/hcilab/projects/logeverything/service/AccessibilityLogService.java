@@ -13,9 +13,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
+
+import androidx.core.app.NotificationCompat;
 
 public class AccessibilityLogService extends AccessibilityService {
 
@@ -32,7 +33,7 @@ public class AccessibilityLogService extends AccessibilityService {
 		super.onCreate();
 		Log.d(TAG, "onCreate");
 		
-		Intent notificationIntent = new Intent(this, MainActivity.class);
+		/*Intent notificationIntent = new Intent(this, MainActivity.class);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
@@ -44,7 +45,7 @@ public class AccessibilityLogService extends AccessibilityService {
 				.setContentIntent(pendingIntent).setAutoCancel(true)
 				.setOngoing(true).setContentInfo("");
 
-		startForeground(42, notification.build());
+		startForeground(42, notification.build());*/
 
 		PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		m_wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);

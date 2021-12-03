@@ -1,7 +1,6 @@
 package org.hcilab.projects.logeverything.sensor.implementation;
 
-import java.io.IOException;
-
+import org.hcilab.projects.logeverything.activity.CONST;
 import org.hcilab.projects.logeverything.sensor.AbstractSensor;
 
 import android.content.Context;
@@ -9,6 +8,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.DebugUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -79,10 +79,10 @@ public class MyAccelerometerSensor extends AbstractSensor implements SensorEvent
 		if (m_IsRunning) {
 			sensorManager.unregisterListener(this);
 			try {
-				m_FileWriter.flush();
-				m_FileWriter.close();
-				m_FileWriter = null;
-			} catch (IOException e) {
+				m_OutputStream.flush();
+				m_OutputStream.close();
+				m_OutputStream = null;
+			} catch (Exception e) {
 				Log.e(TAG, e.toString());
 			}
 			m_IsRunning = false;
@@ -95,25 +95,25 @@ public class MyAccelerometerSensor extends AbstractSensor implements SensorEvent
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
+		Log.d(TAG,  event.values + ",");
         Long t = System.currentTimeMillis();
 		if (m_IsRunning) {
 			try {
 				count++;
 				if (event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
-					m_FileWriter.write(t + ","
-							+ event.values[0] + "," + event.values[1] + ","
-							+ event.values[2] + ",false");
+					m_OutputStream.write((t + ","
+							+ CONST.numberFormat.format(event.values[0]) + "," + CONST.numberFormat.format(event.values[1]) + ","
+							+ CONST.numberFormat.format(event.values[2]) + ",false\n").getBytes());
 				} else {
-					m_FileWriter.write(t + ","
-							+ event.values[0] + "," + event.values[1] + ","
-							+ event.values[2] + ",true");
+					m_OutputStream.write((t + ","
+							+ CONST.numberFormat.format(event.values[0]) + "," + CONST.numberFormat.format(event.values[1]) + ","
+							+ CONST.numberFormat.format(event.values[2]) + ",true\n").getBytes());
 				}
-				m_FileWriter.write("\n");
 				int flushLevel = 100;
 				if (count % flushLevel == 0) {
-					m_FileWriter.flush();
+					m_OutputStream.flush();
 				}
-			} catch (IOException e) {
+			} catch (Exception e) {
 				Log.e(TAG, e.toString());
 			}
 		}

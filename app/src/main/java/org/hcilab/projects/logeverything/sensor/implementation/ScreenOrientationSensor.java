@@ -45,24 +45,23 @@ public class ScreenOrientationSensor extends AbstractSensor {
 			return;
 		
 		m_context = pContext;
-		if (this.m_FileWriter == null)
+		if (this.m_OutputStream == null)
 		{
 			try {
 				if(m_context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-		            m_FileWriter.write(t + ",LANDSCAPE");
+		            m_OutputStream.write((t + ",LANDSCAPE\n").getBytes());
 		        }
 		        else if(m_context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-		            m_FileWriter.write(t + ",PORTRAIT");
+		            m_OutputStream.write((t + ",PORTRAIT\n").getBytes());
 		        }
 		        else if(m_context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_SQUARE){
-		            m_FileWriter.write(t + ",SQUARE");
+		            m_OutputStream.write((t + ",SQUARE\n").getBytes());
 		        }
 		        else {
-		            m_FileWriter.write(t + ",UNDEFINED");
+		            m_OutputStream.write((t + ",UNDEFINED\n").getBytes());
 		        }
-				m_FileWriter.write("\n");
-				m_FileWriter.flush();
-			} catch (IOException e) {
+				m_OutputStream.flush();
+			} catch (Exception e) {
 				Log.e(TAG, e.toString());
 			}	
 		}
@@ -86,10 +85,10 @@ public class ScreenOrientationSensor extends AbstractSensor {
 			m_IsRunning = false;
 			m_context.unregisterReceiver(m_Receiver);	
 			try {
-				m_FileWriter.flush();
-				m_FileWriter.close();
-				m_FileWriter = null;
-			} catch (IOException e) {
+				m_OutputStream.flush();
+				m_OutputStream.close();
+				m_OutputStream = null;
+			} catch (Exception e) {
 				Log.e(TAG, e.toString());
 			}		
 		}	
@@ -103,20 +102,19 @@ public class ScreenOrientationSensor extends AbstractSensor {
 				if (intent.getAction().equals(Intent.ACTION_CONFIGURATION_CHANGED) ) {
 	                try {
 		                if(context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-		                    m_FileWriter.write(t + ",LANDSCAPE");
+							m_OutputStream.write((t + ",LANDSCAPE\n").getBytes());
 		                }
 		                else if(context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-		                    m_FileWriter.write(t + ",PORTRAIT");
+							m_OutputStream.write((t + ",PORTRAIT\n").getBytes());
 		                }
 						else if(context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_SQUARE){
-							m_FileWriter.write(t + ",SQUARE");
+							m_OutputStream.write((t + ",SQUARE\n").getBytes());
 						}
 		                else {
-		                    m_FileWriter.write(t + ",UNDEFINED");
+							m_OutputStream.write((t + ",UNDEFINED\n").getBytes());
 		                }
-						m_FileWriter.write("\n");
-						m_FileWriter.flush();
-	                } catch (IOException e) {
+						m_OutputStream.flush();
+	                } catch (Exception e) {
 						Log.e(TAG, e.toString());
 					}
 	            }				

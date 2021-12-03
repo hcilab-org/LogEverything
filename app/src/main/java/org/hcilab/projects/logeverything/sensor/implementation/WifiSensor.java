@@ -1,6 +1,5 @@
 package org.hcilab.projects.logeverything.sensor.implementation;
 
-import java.io.IOException;
 
 import org.hcilab.projects.logeverything.sensor.AbstractSensor;
 
@@ -39,14 +38,13 @@ public class WifiSensor extends AbstractSensor {
 		if (!m_isSensorAvailable)
 			return;		
 
-		WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+		WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 		WifiInfo wifiInfo = wifiManager.getConnectionInfo();		
 		String ssid = (wifiInfo.getSSID() == null) ? "NONE" : wifiInfo.getSSID();
 		try {
-			m_FileWriter.write(t + "," + ssid);
-			m_FileWriter.write("\n");
-			m_FileWriter.flush();			
-		} catch (IOException e) {
+			m_OutputStream.write((t + "," + ssid +"\n").getBytes());
+			m_OutputStream.flush();
+		} catch (Exception e) {
 			Log.e(TAG, e.toString());
 		}
 		m_IsRunning = true;
@@ -57,10 +55,10 @@ public class WifiSensor extends AbstractSensor {
 		if(m_IsRunning) {
 			m_IsRunning = false;
 			try {
-				m_FileWriter.flush();			
-				m_FileWriter.close();
-				m_FileWriter = null;
-			} catch (IOException e) {
+				m_OutputStream.flush();
+				m_OutputStream.close();
+				m_OutputStream = null;
+			} catch (Exception e) {
 				Log.e(TAG, e.toString());
 			}		
 		}

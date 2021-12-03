@@ -32,7 +32,7 @@ public class SensorList {
 
 		list.add(new AccessibilitySensor());
 		list.add(new MyAccelerometerSensor());
-		list.add(new ActivitySensor());
+		//list.add(new ActivitySensor()); // This is not longer supported by Android
 		//list.add(new AirplaneModeSensor());
 		list.add(new AppSensor());
 		//list.add(new AudioLevelSensor());
@@ -55,7 +55,8 @@ public class SensorList {
 		
 		for (AbstractSensor s : list)
 			s.setEnabled(db.getSensorData(s));
-		
+
+		db.close();
 			
 		return list;
 	}

@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.hcilab.projects.logeverything.sensor.AbstractSensor;
 import org.hcilab.projects.logeverything.sensor.SensorList;
+import org.hcilab.projects.logeverything.sensor.implementation.AppSensor;
+import org.hcilab.projects.logeverything.sensor.implementation.MyAccelerometerSensor;
 
 import android.content.Intent;
 import android.util.Log;
@@ -24,15 +26,19 @@ public class LogService extends AbstractService {
 		
 		sensorList = SensorList.getList(this);
 		
-		//Log.d(TAG, "size: "+sensorList.size());
+		Log.d(TAG, "size: "+sensorList.size());
 		for(AbstractSensor sensor : sensorList) {
 			if (sensor.isEnabled() && sensor.isAvailable(this))
 			{
 				sensor.start(this);
+				//if(sensor instanceof MyAccelerometerSensor) ((MyAccelerometerSensor)sensor).start(this);
+				//if(sensor instanceof AppSensor) ((AppSensor)sensor).start(this);
+
+				Log.d(TAG, sensor.getSensorName() + " turned on");
 			}
 			else
 			{
-				Log.w(TAG, sensor.getSensorName() + " if Off");
+				Log.w(TAG, sensor.getSensorName() + " turned off");
 			}
 		}
 		

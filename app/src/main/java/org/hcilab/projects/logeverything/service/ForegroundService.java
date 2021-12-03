@@ -1,17 +1,26 @@
 package org.hcilab.projects.logeverything.service;
 
+import static androidx.core.app.NotificationCompat.PRIORITY_MIN;
+
 import org.hcilab.projects.logeverything.R;
 import org.hcilab.projects.logeverything.activity.MainActivity;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 
 public abstract class  ForegroundService extends Service {
 
@@ -35,13 +44,46 @@ public abstract class  ForegroundService extends Service {
 				.setContentIntent(pendingIntent).setAutoCancel(true)
 				.setOngoing(true).setContentInfo("");
 
-		startForeground(42, notification.build());
+		startForeground(); //startForeground(42, notification.build());
 	
 		
 		PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		m_wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
 
 		boolean m_InProgress = false;
+	}
+
+	private void startForeground() {
+		String channelId = "";
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			channelId = createNotificationChannel("my_service", "My Background Service");
+		} else {
+			// If earlier version channel ID is not used
+			// https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
+			channelId = "";
+		}
+		Intent notificationIntent = new Intent(this, MainActivity.class);
+		PendingIntent pendingIntent = PendingIntent.getActivity(this,
+				0, notificationIntent, 0);
+		Notification notification = new NotificationCompat.Builder(this, channelId)
+				.setContentTitle("LogEverything")
+				.setContentText("App is running in background")
+				.setSmallIcon(R.drawable.ic_launcher)
+				.setContentIntent(pendingIntent)
+				.build();
+		startForeground(101, notification);
+	}
+
+	@RequiresApi(Build.VERSION_CODES.O)
+	private String createNotificationChannel(String channelId, String channelName) {
+		NotificationChannel chan = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_NONE);
+		chan.setLightColor(Color.BLUE);
+		chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+		NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		assert manager != null;
+		manager.createNotificationChannel(chan);
+
+		return channelId;
 	}
 	
 	@Override

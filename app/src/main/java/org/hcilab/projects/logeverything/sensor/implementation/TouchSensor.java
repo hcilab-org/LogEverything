@@ -2,13 +2,13 @@ package org.hcilab.projects.logeverything.sensor.implementation;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Random;
 
 import org.hcilab.projects.logeverything.handler.HandlerListener;
 import org.hcilab.projects.logeverything.handler.TouchHandler;
 import org.hcilab.projects.logeverything.sensor.AbstractSensor;
 
+import android.app.Application;
 import android.content.Context;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -73,10 +73,10 @@ public class TouchSensor extends AbstractSensor implements HandlerListener {
 		if(m_IsRunning) {
 			m_IsRunning = false;
 			try {
-				m_FileWriter.flush();			
-				m_FileWriter.close();
-				m_FileWriter = null;
-			} catch (IOException e) {
+				m_OutputStream.flush();
+				m_OutputStream.close();
+				m_OutputStream = null;
+			} catch (Exception e) {
 				Log.e(TAG, e.toString());
 			}		
 			m_ServiceHandler.stop();
@@ -86,26 +86,16 @@ public class TouchSensor extends AbstractSensor implements HandlerListener {
 
 	@Override
 	public void sendMessage(String msg) {
-		if (m_FileWriter == null)
-		{
-			try {
-				m_FileWriter = new FileWriter(new File(getFilePath()), true);
-			} catch (IOException e) {
-				Log.e(TAG, e.toString());
-			}
-		}
-		
 		if(m_IsRunning) {
 			try {
 				Log.d(TAG, "#"+msg);
-				m_FileWriter.write(msg);
-				m_FileWriter.write("\n");		
+				m_OutputStream.write((msg + "\n").getBytes());
 				count++;
 				int flushLevel = 100;
 				if (count % flushLevel == 0) {
-					m_FileWriter.flush();
+					m_OutputStream.flush();
 				}
-			} catch (IOException e) {
+			} catch (Exception e) {
 				Log.e(TAG, e.toString());
 			}	
 		}

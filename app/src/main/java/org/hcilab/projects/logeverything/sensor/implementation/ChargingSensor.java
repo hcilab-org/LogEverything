@@ -51,13 +51,12 @@ public class ChargingSensor extends AbstractSensor {
 
 		try {		
 			if(isConnected(context)) {
-				m_FileWriter.write(t + ",true");
+				m_OutputStream.write((t + ",true\n").getBytes());
 			} else {
-				m_FileWriter.write(t + ",false");
-			}			
-			m_FileWriter.write("\n");
-			m_FileWriter.flush();			
-		} catch (IOException e) {
+				m_OutputStream.write((t + ",false\n").getBytes());
+			}
+			m_OutputStream.flush();
+		} catch (Exception e) {
 			Log.e(TAG, e.toString());
 		}
 		m_IsRunning = true;
@@ -69,10 +68,10 @@ public class ChargingSensor extends AbstractSensor {
 			//m_context.unregisterReceiver(mReceiver);	
 			m_IsRunning = false;
 			try {
-				m_FileWriter.flush();
-				m_FileWriter.close();
-				m_FileWriter = null;
-			} catch (IOException e) {
+				m_OutputStream.flush();
+				m_OutputStream.close();
+				m_OutputStream = null;
+			} catch (Exception e) {
 				Log.e(TAG, e.toString());
 			}		
 		}	

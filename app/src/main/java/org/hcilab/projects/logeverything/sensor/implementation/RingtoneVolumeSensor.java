@@ -1,7 +1,5 @@
 package org.hcilab.projects.logeverything.sensor.implementation;
 
-import java.io.IOException;
-
 import org.hcilab.projects.logeverything.sensor.AbstractSensor;
 
 import android.content.Context;
@@ -41,11 +39,10 @@ public class RingtoneVolumeSensor extends AbstractSensor {
 
 		AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		int currentVolume = audio.getStreamVolume(AudioManager.STREAM_RING);
-		try {		
-			m_FileWriter.write(t + "," + currentVolume);
-			m_FileWriter.write("\n");
-			m_FileWriter.flush();			
-		} catch (IOException e) {
+		try {
+			m_OutputStream.write((t + "," + currentVolume + "\n").getBytes());
+			m_OutputStream.flush();
+		} catch (Exception e) {
 			Log.e(TAG, e.toString());
 		}
 		m_IsRunning = true;
@@ -56,10 +53,10 @@ public class RingtoneVolumeSensor extends AbstractSensor {
 		if(m_IsRunning) {
 			m_IsRunning = false;
 			try {
-				m_FileWriter.flush();
-				m_FileWriter.close();
-				m_FileWriter = null;
-			} catch (IOException e) {
+				m_OutputStream.flush();
+				m_OutputStream.close();
+				m_OutputStream = null;
+			} catch (Exception e) {
 				Log.e(TAG, e.toString());
 			}		
 		}

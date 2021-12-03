@@ -12,9 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 public class SensorAdapter extends CursorAdapter  {
@@ -32,7 +33,9 @@ public class SensorAdapter extends CursorAdapter  {
 		int id;
 		TextView text;
 		Button settings;
-		CheckBox checkbox;
+		Switch aSwitch;
+		ImageView ivGreen;
+		ImageView ivRed;
 	}
 	
 	public SensorAdapter (Activity pContext, Cursor pCursor)
@@ -56,21 +59,21 @@ public class SensorAdapter extends CursorAdapter  {
 		if (cursor.getInt(cursor.getColumnIndex(COLUMN_ISAVAILABLE)) == 0)
 		{
 	    	holder.text.setTextColor(Color.GRAY);
-	    	holder.checkbox.setEnabled(false);
-	    	holder.checkbox.setChecked(false);
+	    	holder.aSwitch.setEnabled(false);
+	    	holder.aSwitch.setChecked(false);
 	    	holder.settings.setEnabled(false);
 				
 		}
 		else
 		{
 			holder.text.setTextColor(Color.BLACK);
-	    	holder.checkbox.setEnabled(true);
+	    	holder.aSwitch.setEnabled(true);
 	    	holder.settings.setEnabled(true);
 	    	
 	        if (cursor.getInt(cursor.getColumnIndex(COLUMN_ISSELECTED)) == 1)
-	        	holder.checkbox.setChecked(true);
+	        	holder.aSwitch.setChecked(true);
 	        else
-	        	holder.checkbox.setChecked(false);
+	        	holder.aSwitch.setChecked(false);
 	        
 	        
 	        if (cursor.getInt(cursor.getColumnIndex(COLUMN_SETTINGSSTATE)) == 0)
@@ -88,11 +91,15 @@ public class SensorAdapter extends CursorAdapter  {
         View retView = inflater.inflate(R.layout.abstract_sensor_layout, parent, false);
         
 		final ViewHolder viewHolder = new ViewHolder();
-		viewHolder.text = (TextView) retView.findViewById(R.id.label);
-		viewHolder.settings = (Button) retView.findViewById(R.id.buttonSettings);
-		viewHolder.checkbox = (CheckBox) retView.findViewById(R.id.check);
+		viewHolder.text = retView.findViewById(R.id.label);
+		viewHolder.settings = retView.findViewById(R.id.buttonSettings);
+		viewHolder.aSwitch = retView.findViewById(R.id.check);
+		viewHolder.ivGreen = retView.findViewById(R.id.imageviewGreen);
+		viewHolder.ivGreen.setVisibility(View.INVISIBLE);
+		viewHolder.ivRed = retView.findViewById(R.id.imageviewRed);
+		viewHolder.ivRed.setVisibility(View.INVISIBLE);
 		
-		viewHolder.checkbox.setOnCheckedChangeListener(
+		viewHolder.aSwitch.setOnCheckedChangeListener(
 			new CompoundButton.OnCheckedChangeListener() {
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {					

@@ -4,8 +4,12 @@ import org.hcilab.projects.logeverything.sensor.AbstractSensor;
 import android.content.Context;
 import android.view.View;
 
-public class ActivitySensor extends AbstractSensor{
-    @Override
+public class ActivitySensor {
+
+}/* extends AbstractSensor {
+}
+}
+   @Override
     public View getSettingsView(Context context) {
         return null;
     }
@@ -22,7 +26,7 @@ public class ActivitySensor extends AbstractSensor{
 //TODO:
 }
 
-/*implements ConnectionCallbacks, OnConnectionFailedListener {
+implements ConnectionCallbacks, OnConnectionFailedListener {
 
 	private static final long serialVersionUID = 1L;
 	

@@ -59,7 +59,7 @@ public class AudioLevelSensor extends AbstractSensor {
 				}
 			}, 1000);
 			m_IsRunning = true;
-			m_FileWriter.flush();
+			m_OutputStream.flush();
 		} catch (Exception e) {
 			Log.e(TAG, e.toString());
 		}
@@ -97,10 +97,10 @@ public class AudioLevelSensor extends AbstractSensor {
 		
 		try {
 			int amplitude = mediaRecorder.getMaxAmplitude();
-			if (m_FileWriter!=null)
-			m_FileWriter.write(t+","+amplitude+"\n");
+			if (m_OutputStream!=null)
+				m_OutputStream.write((t+","+amplitude+"\n").getBytes());
 			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			Log.d(TAG, e.toString());
 		}
 	}
@@ -110,10 +110,10 @@ public class AudioLevelSensor extends AbstractSensor {
 		if(m_IsRunning) {
 			m_IsRunning = false;
 			try {
-				m_FileWriter.flush();
-				m_FileWriter.close();
-				m_FileWriter = null;
-			} catch (IOException e) {
+				m_OutputStream.flush();
+				m_OutputStream.close();
+				m_OutputStream = null;
+			} catch (Exception e) {
 				Log.e(TAG, e.toString());
 			}
 

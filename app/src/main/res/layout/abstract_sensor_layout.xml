@@ -1,41 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="match_parent"
+	android:layout_gravity="center_vertical"
+	android:layout_centerVertical="true"
+	android:paddingStart="10dp"
+	android:paddingEnd="10dp">
 
-    <TextView
-        android:id="@+id/label"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal|center"
-        android:text="@+id/label"
-        android:textAlignment="inherit"
-        android:textSize="16sp" >
+	<TextView
+		android:id="@+id/label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentStart="true"
+		android:layout_centerVertical="true"
+		android:layout_marginStart="0dp"
+		android:gravity="center"
+		android:text="TEXT TEX TEXT"
+		android:textAlignment="inherit"
+		android:textSize="16sp" />
 
-    </TextView>
+	<ImageView
+		android:id="@+id/imageviewRed"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginEnd="0dp"
+		android:layout_centerVertical="true"
+		android:layout_toStartOf="@+id/buttonSettings"
+		android:src="@drawable/circle_red"
+		android:contentDescription="Red circle" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:orientation="horizontal" >
-	    
-		<Button
-		    android:id="@+id/buttonSettings"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:text="@+id/settings"
-		    android:textSize="12sp" >
-	
-	    </Button>
+	<ImageView
+		android:id="@+id/imageviewGreen"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginEnd="0dp"
+		android:layout_centerVertical="true"
+		android:layout_toStartOf="@+id/buttonSettings"
+		android:src="@drawable/circle_green"
+		android:contentDescription="Green circle" />
 
-		<CheckBox
-		    android:id="@+id/check"
-		    android:layout_width="wrap_content"
-		    android:layout_height="match_parent"
-		    android:layout_marginLeft="4dp"
-		    android:layout_marginRight="10dp" />
+	<Button
+		android:id="@+id/buttonSettings"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginEnd="0dp"
+		android:layout_centerVertical="true"
+		android:layout_toStartOf="@+id/check"
+		android:text="@+id/settings"
+		android:textSize="12sp">
 
-	</LinearLayout>
-    
-</RelativeLayout> 
+	</Button>
+
+	<Switch
+		android:id="@+id/check"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text=""
+		android:layout_alignParentEnd="true"
+		android:layout_centerVertical="true"
+		android:layout_marginStart="4dp"
+		android:layout_marginEnd="0dp" />
+
+
+</RelativeLayout>
