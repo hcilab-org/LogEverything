@@ -136,6 +136,7 @@ public class AccessibilityLogService extends AccessibilityService {
     
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+	    Log.d(TAG,"onAccessibilityEvent: "+getEventType(event));
     	
     	if (AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED == event.getEventType())
     		return;
