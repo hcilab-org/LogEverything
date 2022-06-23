@@ -10,7 +10,7 @@
             android:layout_height="wrap_content"
             android:background="@color/main_color"
             android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <ListView
             android:id="@+id/sensor_list"
